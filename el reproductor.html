@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi Biblioteca Musical</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .fade-in {
+      animation: fadeIn 0.8s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .bg-animated {
+      background: linear-gradient(-45deg, #1f2937, #374151, #4b5563, #1f2937);
+      background-size: 400% 400%;
+      animation: gradient 12s ease infinite;
+    }
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+<body class="bg-animated text-white min-h-screen">
+  <div class="max-w-5xl mx-auto py-10 px-4">
+    <h1 class="text-5xl font-extrabold mb-8 text-center animate-bounce drop-shadow-md">🎧 Biblioteca Musical Creativa</h1>
+
+    <!-- Embed de Spotify Album -->
+    <div class="flex justify-center mb-8">
+      <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/4reJOCjzw6ifHh6sXBRgc8?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+
+    <!-- Embed de Spotify Track -->
+    <div class="flex justify-center mb-8">
+      <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/1NE1PZqgyuAPbLaygwa4a1?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+
+    <div class="flex justify-center mb-6">
+      <input
+        type="text"
+        id="search"
+        placeholder="🔍 Buscar canción..."
+        class="w-full max-w-xl px-4 py-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-pink-500 shadow-lg"
+      />
+    </div>
+
+    <div id="songList" class="grid sm:grid-cols-2 md:grid-cols-3 gap-6 max-h-[60vh] overflow-y-auto px-2">
+      <!-- Canciones insertadas dinámicamente -->
+    </div>
+
+    <div class="mt-12 bg-gray-800 p-6 rounded-xl shadow-lg backdrop-blur-md">
+      <h2 class="text-xl font-bold mb-2 text-center">Reproductor</h2>
+      <audio id="audioPlayer" controls class="w-full">
+        <source id="audioSource" src="" type="audio/mpeg">
+        Tu navegador no soporta el reproductor de audio.
+      </audio>
+    </div>
+  </div>
+
+  <script>
+    const audioPlayer = document.getElementById('audioPlayer');
+    const audioSource = document.getElementById('audioSource');
+    const songList = document.getElementById('songList');
+    const searchInput = document.getElementById('search');
+
+    const songUrls = [
+      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
+      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3',
+      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3',
+      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
+      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3',
+      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3'
+    ];
+
+    const songs = Array.from({ length: 100 }, (_, i) => ({
+      title: `🎶 Canción #${i + 1}`,
+      artist: `🎤 Artista ${i % 10 + 1}`,
+      url: songUrls[i % songUrls.length]
+    }));
+
+    function renderSongs(filter = '') {
+      songList.innerHTML = '';
+      songs
+        .filter(song => song.title.toLowerCase().includes(filter.toLowerCase()))
+        .forEach((song, index) => {
+          const songItem = document.createElement('div');
+          songItem.className =
+            'p-4 bg-gray-800 rounded-xl shadow-lg hover:shadow-pink-500/40 hover:scale-105 transition-all fade-in flex flex-col justify-between';
+          songItem.innerHTML = `
+            <div class="mb-4">
+              <p class="text-lg font-bold">${song.title}</p>
+              <p class="text-sm text-gray-400">${song.artist}</p>
+            </div>
+            <button
+              class="bg-pink-600 hover:bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-semibold transition"
+              onclick="playSong('${song.url}')"
+            >
+              ▶️ Reproducir
+            </button>
+          `;
+          songList.appendChild(songItem);
+        });
+    }
+
+    function playSong(url) {
+      audioSource.src = url;
+      audioPlayer.load();
+      audioPlayer.play();
+    }
+
+    searchInput.addEventListener('input', (e) => {
+      renderSongs(e.target.value);
+    });
+
+    renderSongs();
+  </script>
+</body>
+</html>
